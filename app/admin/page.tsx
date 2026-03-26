@@ -105,8 +105,9 @@ export default function AdminPage() {
         const err = await res.json();
         alert(`Delete failed: ${err.error}`);
       }
-    } catch (e) {
-      alert("Delete failed: Connection error.");
+    } catch (e: any) {
+      console.error("Delete error:", e);
+      alert(`Delete failed: ${e.message || "Connection error."}`);
     }
     setDeletingId(null);
   };
