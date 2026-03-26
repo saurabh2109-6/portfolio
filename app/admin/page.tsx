@@ -14,6 +14,7 @@ export default function AdminPage() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(true);
+  const [messagesError, setMessagesError] = useState("");
   
   // Security State
   const [newEmail, setNewEmail] = useState("");
@@ -33,9 +34,18 @@ export default function AdminPage() {
       });
 
     fetch("/api/contact")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
         if (Array.isArray(data)) setMessages(data);
+        else if (data.error) setMessagesError(data.error);
+        setMessagesLoading(false);
+      })
+      .catch(err => {
+        console.error("Messages fetch error:", err);
+        setMessagesError(err.message);
         setMessagesLoading(false);
       });
   }, []);
@@ -602,6 +612,8 @@ export default function AdminPage() {
             <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {messagesLoading ? (
                 <p className="text-sm opacity-50">Loading messages...</p>
+              ) : messagesError ? (
+                <p className="text-sm text-red-400">Error: {messagesError}</p>
               ) : messages.length === 0 ? (
                 <p className="text-sm opacity-50">No messages yet.</p>
               ) : (
