@@ -142,6 +142,6 @@ export async function savePortfolioData(data: PortfolioData): Promise<void> {
 
   if (error) {
     console.error('Error saving portfolio data:', error);
-    throw new Error('Failed to save data');
+    throw new Error(error.message || 'Failed to save data');
   }
 }
