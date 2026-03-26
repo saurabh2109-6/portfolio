@@ -123,14 +123,16 @@ export async function getPortfolioData(): Promise<PortfolioData> {
       .from('portfolio')
       .select('data')
       .eq('id', 1)
-      .single();
+      .maybeSingle();
 
-    if (error || !data) {
+    if (error || !data || !data.data || Object.keys(data.data).length === 0) {
       return FALLBACK_DATA;
     }
     
-    return data.data as PortfolioData;
+    // Merge with fallback to ensure all fields exist if some are missing in DB
+    return { ...FALLBACK_DATA, ...data.data } as PortfolioData;
   } catch (e) {
+    console.error('getPortfolioData Exception:', e);
     return FALLBACK_DATA;
   }
 }
