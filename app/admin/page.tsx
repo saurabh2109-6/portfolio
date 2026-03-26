@@ -498,6 +498,24 @@ export default function AdminPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-medium mb-1">Phone</label>
+                <input
+                  type="text"
+                  value={data?.contact.phone}
+                  onChange={(e) => setData({...data!, contact: {...data!.contact, phone: e.target.value}})}
+                  className="w-full px-4 py-2 glass rounded-lg border border-white/10 focus:border-purple-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Location</label>
+                <input
+                  type="text"
+                  value={data?.contact.location}
+                  onChange={(e) => setData({...data!, contact: {...data!.contact, location: e.target.value}})}
+                  className="w-full px-4 py-2 glass rounded-lg border border-white/10 focus:border-purple-500 outline-none"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-medium mb-1">GitHub URL</label>
                 <input
                   type="text"
