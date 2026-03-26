@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
 
 const Navbar = () => {
@@ -13,6 +13,7 @@ const Navbar = () => {
   const [user, setUser] = useState<any>(null);
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const pathname = usePathname();
   const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
@@ -41,6 +42,11 @@ const Navbar = () => {
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/#contact" },
   ];
+
+  // Hide the public navbar when on the admin or login pages
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/login')) {
+    return null;
+  }
 
   return (
     <nav className="fixed top-0 w-full z-50 glass border-b border-white/10">

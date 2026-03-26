@@ -48,8 +48,8 @@ export async function GET() {
 
 export async function DELETE(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
     console.log('DELETE request for contact ID:', id);
 
     if (!id) {
