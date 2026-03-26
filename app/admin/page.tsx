@@ -45,7 +45,8 @@ export default function AdminPage() {
     if (res.ok) {
       setMessage("Saved successfully!");
     } else {
-      setMessage("Failed to save.");
+      const errorData = await res.json();
+      setMessage(`Failed to save: ${errorData.error || 'Unknown error'}`);
     }
     setSaving(false);
   };

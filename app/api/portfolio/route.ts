@@ -17,7 +17,11 @@ export async function POST(request: Request) {
     await savePortfolioData(newData);
     revalidatePath('/');
     return NextResponse.json({ message: 'Portfolio data updated successfully' });
-  } catch {
-    return NextResponse.json({ error: 'Failed to update portfolio data' }, { status: 500 });
+  } catch (error: any) {
+    console.error('API POST Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to update portfolio data' },
+      { status: 500 }
+    );
   }
 }
