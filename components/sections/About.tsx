@@ -3,8 +3,9 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Download } from "lucide-react";
+import { PortfolioData } from "@/lib/portfolio";
 
-const About = () => {
+const About = ({ data }: { data: PortfolioData['about'] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -40,10 +41,10 @@ const About = () => {
         {/* Section Title */}
         <motion.div variants={itemVariants} className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
-            About Me
+            {data.title}
           </h2>
           <p className="text-muted-foreground text-lg">
-            Get to know me better
+            {data.subtitle}
           </p>
         </motion.div>
 
@@ -65,35 +66,21 @@ const About = () => {
           {/* Content Side */}
           <motion.div variants={itemVariants} className="space-y-6">
             <h3 className="text-2xl font-bold">
-              Hi! I'm a passionate developer
+              Hi! I&apos;m a passionate developer
             </h3>
-            <p className="text-muted-foreground">
-              I'm a full-stack developer with a passion for creating beautiful,
-              functional, and user-friendly websites and applications. With
-              expertise in modern web technologies, I bring ideas to life through
-              clean code and innovative solutions.
-            </p>
-            <p className="text-muted-foreground">
-              When I'm not coding, you can find me exploring new technologies,
-              contributing to open-source projects, or sharing knowledge with
-              the developer community. I believe in continuous learning and
-              staying up-to-date with the latest industry trends.
-            </p>
+            {data.paragraphs.map((p: string, i: number) => (
+              <p key={i} className="text-muted-foreground">
+                {p}
+              </p>
+            ))}
 
-            {/* Stats */}
             <div className="grid grid-cols-3 gap-4 pt-6">
-              <div className="text-center glass rounded-lg p-4">
-                <p className="text-3xl font-bold text-purple-400">3+</p>
-                <p className="text-sm text-muted-foreground">Years Exp.</p>
-              </div>
-              <div className="text-center glass rounded-lg p-4">
-                <p className="text-3xl font-bold text-purple-400">50+</p>
-                <p className="text-sm text-muted-foreground">Projects</p>
-              </div>
-              <div className="text-center glass rounded-lg p-4">
-                <p className="text-3xl font-bold text-purple-400">20+</p>
-                <p className="text-sm text-muted-foreground">Clients</p>
-              </div>
+              {data.stats.map((stat: { label: string; value: string }, i: number) => (
+                <div key={i} className="text-center glass rounded-lg p-4">
+                  <p className="text-3xl font-bold text-purple-400">{stat.value}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                </div>
+              ))}
             </div>
 
             {/* Download CV Button */}

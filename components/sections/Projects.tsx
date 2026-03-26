@@ -3,81 +3,19 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { ExternalLink, Github } from "lucide-react";
+import { PortfolioData } from "@/lib/portfolio";
 
-const Projects = () => {
+const Projects = ({ data }: { data: PortfolioData['projects'] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [filter, setFilter] = useState("All");
 
-  const projects = [
-    {
-      title: "E-Commerce Platform",
-      description:
-        "A full-featured online shopping platform with cart, checkout, and payment integration.",
-      image: "🛒",
-      tags: ["Next.js", "TypeScript", "Stripe", "MongoDB"],
-      category: "Web",
-      github: "https://github.com/yourusername/project1",
-      live: "https://project1.com",
-    },
-    {
-      title: "Social Media App",
-      description:
-        "A modern social networking application with real-time messaging and notifications.",
-      image: "💬",
-      tags: ["React Native", "Firebase", "Node.js", "Socket.io"],
-      category: "Mobile",
-      github: "https://github.com/yourusername/project2",
-      live: "https://project2.com",
-    },
-    {
-      title: "Task Management Tool",
-      description:
-        "A collaborative task management system with team features and analytics.",
-      image: "✅",
-      tags: ["React", "Express", "PostgreSQL", "Redux"],
-      category: "Web",
-      github: "https://github.com/yourusername/project3",
-      live: "https://project3.com",
-    },
-    {
-      title: "Weather Dashboard",
-      description:
-        "A beautiful weather application with forecasts, maps, and location-based alerts.",
-      image: "🌤️",
-      tags: ["Vue.js", "OpenWeather API", "Charts.js", "Tailwind"],
-      category: "Web",
-      github: "https://github.com/yourusername/project4",
-      live: "https://project4.com",
-    },
-    {
-      title: "Fitness Tracker",
-      description:
-        "A comprehensive fitness tracking app with workout plans and progress analytics.",
-      image: "💪",
-      tags: ["Flutter", "Firebase", "Charts", "Health Kit"],
-      category: "Mobile",
-      github: "https://github.com/yourusername/project5",
-      live: "https://project5.com",
-    },
-    {
-      title: "Portfolio Builder",
-      description:
-        "A drag-and-drop portfolio builder for developers and designers.",
-      image: "🎨",
-      tags: ["Next.js", "DnD", "Tailwind", "Vercel"],
-      category: "Web",
-      github: "https://github.com/yourusername/project6",
-      live: "https://project6.com",
-    },
-  ];
-
-  const categories = ["All", "Web", "Mobile"];
+  const categories = ["All", ...new Set(data.map((p) => p.category))];
 
   const filteredProjects =
     filter === "All"
-      ? projects
-      : projects.filter((project) => project.category === filter);
+      ? data
+      : data.filter((project) => project.category === filter);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -160,8 +98,7 @@ const Projects = () => {
                 </p>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag) => (
+                  {project.tags.map((tag: string) => (
                     <span
                       key={tag}
                       className="px-3 py-1 text-xs bg-purple-500/20 text-purple-300 rounded-full"
@@ -169,7 +106,6 @@ const Projects = () => {
                       {tag}
                     </span>
                   ))}
-                </div>
 
                 {/* Links */}
                 <div className="flex space-x-4">

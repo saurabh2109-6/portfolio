@@ -1,15 +1,26 @@
 "use client";
 
-import { Github, Linkedin, Twitter, Mail } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
+import { useState, useEffect } from "react";
+
+import { PortfolioData } from "@/lib/portfolio";
 
 const Footer = () => {
+  const [socials, setSocials] = useState<PortfolioData['socials'] | null>(null);
   const currentYear = new Date().getFullYear();
 
+  useEffect(() => {
+    fetch("/api/portfolio")
+      .then((res) => res.json())
+      .then((data) => setSocials(data.socials));
+  }, []);
+
+  if (!socials) return null;
+
   const socialLinks = [
-    { icon: Github, href: "https://github.com/yourusername", label: "GitHub" },
-    { icon: Linkedin, href: "https://linkedin.com/in/yourusername", label: "LinkedIn" },
-    { icon: Twitter, href: "https://twitter.com/yourusername", label: "Twitter" },
-    { icon: Mail, href: "mailto:your.email@example.com", label: "Email" },
+    { icon: Github, href: socials.github, label: "GitHub" },
+    { icon: Linkedin, href: socials.linkedin, label: "LinkedIn" },
+    { icon: Mail, href: socials.email, label: "Email" },
   ];
 
   return (

@@ -13,60 +13,23 @@ import {
   Palette,
 } from "lucide-react";
 
-const Skills = () => {
+import React from "react";
+import { PortfolioData } from "@/lib/portfolio";
+
+const iconMap: Record<string, React.ElementType> = {
+  Layout,
+  Server,
+  Database,
+  Smartphone,
+  Cloud,
+  GitBranch,
+  Palette,
+  Code2,
+};
+
+const Skills = ({ data }: { data: PortfolioData['skills'] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const skillCategories = [
-    {
-      title: "Frontend",
-      icon: Layout,
-      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vue.js"],
-      color: "text-blue-400",
-    },
-    {
-      title: "Backend",
-      icon: Server,
-      skills: ["Node.js", "Express", "Python", "Django", "REST APIs"],
-      color: "text-green-400",
-    },
-    {
-      title: "Database",
-      icon: Database,
-      skills: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Firebase"],
-      color: "text-yellow-400",
-    },
-    {
-      title: "Mobile",
-      icon: Smartphone,
-      skills: ["React Native", "Flutter", "iOS", "Android", "PWA"],
-      color: "text-purple-400",
-    },
-    {
-      title: "DevOps",
-      icon: Cloud,
-      skills: ["Docker", "AWS", "CI/CD", "Kubernetes", "Linux"],
-      color: "text-orange-400",
-    },
-    {
-      title: "Tools",
-      icon: GitBranch,
-      skills: ["Git", "GitHub", "VS Code", "Figma", "Postman"],
-      color: "text-pink-400",
-    },
-    {
-      title: "Design",
-      icon: Palette,
-      skills: ["UI/UX", "Responsive", "Animations", "Accessibility", "Figma"],
-      color: "text-cyan-400",
-    },
-    {
-      title: "Languages",
-      icon: Code2,
-      skills: ["JavaScript", "TypeScript", "Python", "Java", "C++"],
-      color: "text-red-400",
-    },
-  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -112,8 +75,8 @@ const Skills = () => {
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {skillCategories.map((category) => {
-            const Icon = category.icon;
+          {data.map((category) => {
+            const Icon = iconMap[category.icon] || Layout;
             return (
               <motion.div
                 key={category.title}
@@ -131,7 +94,7 @@ const Skills = () => {
 
                 {/* Skills List */}
                 <ul className="space-y-2">
-                  {category.skills.map((skill) => (
+                  {category.skills.map((skill: string) => (
                     <li
                       key={skill}
                       className="text-sm text-muted-foreground flex items-center"

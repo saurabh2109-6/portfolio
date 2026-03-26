@@ -1,10 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { PortfolioData } from "@/lib/portfolio";
 
-const Hero = () => {
-  const containerVariants = {
+const Hero = ({ data }: { data: PortfolioData['personal'] }) => {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -15,14 +16,14 @@ const Hero = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: { duration: 0.6, ease: "easeOut" },
     },
-  };
+  } as const;
 
   return (
     <section
@@ -46,7 +47,7 @@ const Hero = () => {
           variants={itemVariants}
           className="text-lg md:text-xl text-purple-400 mb-4"
         >
-          👋 Hello, I'm
+          {data.greeting}
         </motion.p>
 
         {/* Name */}
@@ -54,7 +55,7 @@ const Hero = () => {
           variants={itemVariants}
           className="text-5xl md:text-7xl font-bold mb-6 gradient-text"
         >
-          Your Name Here
+          {data.name}
         </motion.h1>
 
         {/* Title */}
@@ -62,7 +63,7 @@ const Hero = () => {
           variants={itemVariants}
           className="text-2xl md:text-3xl font-semibold text-muted-foreground mb-6"
         >
-          Full-Stack Developer & Creative Problem Solver
+          {data.title}
         </motion.h2>
 
         {/* Description */}
@@ -70,8 +71,7 @@ const Hero = () => {
           variants={itemVariants}
           className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8"
         >
-          I build exceptional digital experiences that combine beautiful design
-          with powerful functionality. Let's create something amazing together.
+          {data.description}
         </motion.p>
 
         {/* CTA Buttons */}

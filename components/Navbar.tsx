@@ -11,16 +11,17 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
   const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
+    { name: "Home", href: "/#home" },
+    { name: "About", href: "/#about" },
+    { name: "Skills", href: "/#skills" },
+    { name: "Projects", href: "/#projects" },
     { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "#contact" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (

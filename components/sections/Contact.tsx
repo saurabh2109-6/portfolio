@@ -3,17 +3,11 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { PortfolioData } from "@/lib/portfolio";
 
-const Contact = () => {
+const Contact = ({ data }: { data: PortfolioData['contact'] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [status, setStatus] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,27 +30,6 @@ const Contact = () => {
     });
   };
 
-  const contactInfo = [
-    {
-      icon: Mail,
-      label: "Email",
-      value: "your.email@example.com",
-      href: "mailto:your.email@example.com",
-    },
-    {
-      icon: Phone,
-      label: "Phone",
-      value: "+1 (555) 123-4567",
-      href: "tel:+15551234567",
-    },
-    {
-      icon: MapPin,
-      label: "Location",
-      value: "San Francisco, CA",
-      href: "#",
-    },
-  ];
-
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -78,6 +51,34 @@ const Contact = () => {
     },
   };
 
+  const [formState, setFormState] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("");
+  const contactInfo = [
+    {
+      icon: Mail,
+      label: "Email",
+      value: data.email,
+      href: `mailto:${data.email}`,
+    },
+    {
+      icon: Phone,
+      label: "Phone",
+      value: data.phone,
+      href: `tel:${data.phone.replace(/\D/g, '')}`,
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: data.location,
+      href: "#",
+    },
+  ];
+
   return (
     <section id="contact" ref={ref} className="py-20 px-4 bg-muted/20">
       <motion.div
@@ -92,7 +93,7 @@ const Contact = () => {
             Get In Touch
           </h2>
           <p className="text-muted-foreground text-lg">
-            Have a project in mind? Let's work together!
+            Have a project in mind? Let&apos;s work together!
           </p>
         </motion.div>
 
@@ -101,7 +102,7 @@ const Contact = () => {
           <motion.div variants={itemVariants} className="md:col-span-2 space-y-6">
             <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
             <p className="text-muted-foreground mb-8">
-              Feel free to reach out through any of these channels. I'm always
+              Feel free to reach out through any of these channels. I&apos;m always
               open to discussing new projects, creative ideas, or opportunities.
             </p>
 
