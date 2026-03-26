@@ -5,6 +5,7 @@ import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
 import { PortfolioData } from "@/lib/portfolio";
 
 const Hero = ({ data }: { data: PortfolioData['personal'] }) => {
+  if (!data) return null;
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
