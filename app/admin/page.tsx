@@ -718,7 +718,6 @@ export default function AdminPage() {
             {message && <span className={message.includes("success") ? "text-green-400" : "text-red-400"}>{message}</span>}
           </div>
         </form>
-        </form>
       </div>
 
       {/* Logout Confirmation Modal */}
