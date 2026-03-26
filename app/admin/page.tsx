@@ -22,9 +22,26 @@ export default function AdminPage() {
   const [securityMessage, setSecurityMessage] = useState("");
   const [securityLoading, setSecurityLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const supabase = createBrowserSupabaseClient();
   const router = useRouter();
+
+  useEffect(() => {
+    // Intercept browser back navigation (e.g. swipe back)
+    window.history.pushState(null, "", window.location.href);
+    
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      setShowLogoutModal(true);
+      window.history.pushState(null, "", window.location.href);
+    };
+    
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     fetch("/api/portfolio")
@@ -112,7 +129,12 @@ export default function AdminPage() {
     setDeletingId(null);
   };
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutModal(false);
     await supabase.auth.signOut();
     router.push("/");
     router.refresh();
@@ -163,7 +185,7 @@ export default function AdminPage() {
             </button>
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
               className="text-sm px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors font-medium border border-red-500/20 ml-2"
             >
               Logout
@@ -696,7 +718,34 @@ export default function AdminPage() {
             {message && <span className={message.includes("success") ? "text-green-400" : "text-red-400"}>{message}</span>}
           </div>
         </form>
+        </form>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+          <div className="bg-[#111] p-8 rounded-2xl border border-white/10 max-w-sm w-full shadow-2xl">
+            <h3 className="text-2xl font-bold mb-3 text-white">Are you sure?</h3>
+            <p className="text-gray-400 text-sm mb-8">Do you really want to logout and leave the admin panel?</p>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors font-medium"
+              >
+                Stay
+              </button>
+              <button
+                type="button"
+                onClick={confirmLogout}
+                className="flex-1 py-3 px-4 rounded-xl bg-red-500/20 text-red-500 hover:bg-red-500/30 transition-colors font-medium border border-red-500/20"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
