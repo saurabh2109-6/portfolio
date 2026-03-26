@@ -3,12 +3,24 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PortfolioData } from "@/lib/portfolio";
+import { createBrowserSupabaseClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
   const [data, setData] = useState<PortfolioData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [message, setMessage] = useState("");
+  
+  // Security State
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [securityMessage, setSecurityMessage] = useState("");
+  const [securityLoading, setSecurityLoading] = useState(false);
+
+  const supabase = createBrowserSupabaseClient();
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/portfolio")
@@ -38,6 +50,27 @@ export default function AdminPage() {
     setSaving(false);
   };
 
+  const handleSecurityUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSecurityLoading(true);
+    setSecurityMessage("");
+    
+    const updates: any = {};
+    if (newEmail) updates.email = newEmail;
+    if (newPassword) updates.password = newPassword;
+
+    const { error } = await supabase.auth.updateUser(updates);
+
+    if (error) {
+      setSecurityMessage(`Error: ${error.message}`);
+    } else {
+      setSecurityMessage("Security settings updated successfully! Please check your email if you changed it.");
+      setNewEmail("");
+      setNewPassword("");
+    }
+    setSecurityLoading(false);
+  };
+
   const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!data) return;
     setData({
@@ -56,7 +89,33 @@ export default function AdminPage() {
       <div className="max-w-4xl mx-auto glass p-8 rounded-2xl border border-white/10">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold gradient-text">Backend Controller</h1>
-          <Link href="/" className="text-sm text-purple-400 hover:underline">Back to Site</Link>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={async () => {
+                setSyncing(true);
+                try {
+                  const res = await fetch("/api/portfolio");
+                  const localData = await res.json();
+                  const res2 = await fetch("/api/portfolio", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(localData),
+                  });
+                  if (res2.ok) setMessage("Data synced to Cloud!");
+                  else setMessage("Sync failed.");
+                } catch (e) {
+                  setMessage("Sync failed: Check your connection.");
+                }
+                setSyncing(false);
+              }}
+              disabled={syncing}
+              className="text-[10px] px-2 py-1 bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30 transition-all border border-blue-500/20"
+            >
+              {syncing ? "Syncing..." : "Sync Local → Cloud"}
+            </button>
+            <Link href="/" className="text-sm text-purple-400 hover:underline">Back to Site</Link>
+          </div>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -468,7 +527,45 @@ export default function AdminPage() {
             </div>
           </section>
 
-          <div className="flex items-center space-x-4">
+          {/* Security Settings Section */}
+          <section className="space-y-4 pt-8 border-t border-white/10">
+            <h2 className="text-xl font-semibold text-red-400">Security Settings</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">New Admin Email (ID)</label>
+                <input
+                  type="email"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  placeholder="Leave blank to keep current"
+                  className="w-full px-4 py-2 glass rounded-lg border border-white/10 focus:border-red-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Leave blank to keep current"
+                  className="w-full px-4 py-2 glass rounded-lg border border-white/10 focus:border-red-500 outline-none"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button
+                type="button"
+                onClick={handleSecurityUpdate}
+                disabled={securityLoading || (!newEmail && !newPassword)}
+                className="px-6 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm font-medium transition-all"
+              >
+                {securityLoading ? "Updating..." : "Update Security Credentials"}
+              </button>
+              {securityMessage && <span className="text-xs text-red-400">{securityMessage}</span>}
+            </div>
+          </section>
+
+          <div className="flex items-center space-x-4 pt-8">
             <button
               type="submit"
               disabled={saving}

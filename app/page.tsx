@@ -5,8 +5,8 @@ import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import { getPortfolioData } from "@/lib/portfolio";
 
-export default function Home() {
-  const data = getPortfolioData();
+export default async function Home() {
+  const data = await getPortfolioData();
 
   return (
     <>

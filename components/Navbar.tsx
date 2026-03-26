@@ -4,16 +4,34 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createBrowserSupabaseClient } from "@/lib/supabase";
 
 const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
-  }, []);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+  
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   const navItems = [
     { name: "Home", href: "/#home" },
@@ -44,6 +62,24 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+            {/* Admin/Logout Button */}
+            {mounted && (
+              user ? (
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  Admin
+                </Link>
+              )
+            )}
             
             {/* Theme Toggle */}
             {mounted && (
