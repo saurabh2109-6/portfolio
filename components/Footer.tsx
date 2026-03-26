@@ -53,7 +53,7 @@ const Footer = () => {
 
           {/* Credit */}
           <p className="text-sm text-muted-foreground">
-            Built with Next.js & Tailwind CSS
+            Crafted with Precision • © {currentYear} Saurabh Chakarvarti
           </p>
         </div>
       </div>

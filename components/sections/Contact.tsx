@@ -13,12 +13,26 @@ const Contact = ({ data }: { data: PortfolioData['contact'] }) => {
     e.preventDefault();
     setStatus("sending");
     
-    // Simulate form submission
-    setTimeout(() => {
-      setStatus("success");
-      setFormState({ name: "", email: "", subject: "", message: "" });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formState),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormState({ name: "", email: "", subject: "", message: "" });
+        setTimeout(() => setStatus(""), 3000);
+      } else {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to send");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
       setTimeout(() => setStatus(""), 3000);
-    }, 1500);
+    }
   };
 
   const handleChange = (

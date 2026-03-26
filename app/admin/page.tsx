@@ -12,6 +12,8 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState(true);
   
   // Security State
   const [newEmail, setNewEmail] = useState("");
@@ -28,6 +30,13 @@ export default function AdminPage() {
       .then((data) => {
         setData(data);
         setLoading(false);
+      });
+
+    fetch("/api/contact")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setMessages(data);
+        setMessagesLoading(false);
       });
   }, []);
 
@@ -581,6 +590,43 @@ export default function AdminPage() {
                 {securityLoading ? "Updating..." : "Update Security Credentials"}
               </button>
               {securityMessage && <span className="text-xs text-red-400">{securityMessage}</span>}
+            </div>
+          </section>
+
+          {/* Inbox Section */}
+          <section className="space-y-4 pt-8 border-t border-white/10">
+            <h2 className="text-xl font-semibold text-purple-400 flex items-center justify-between">
+              <span>Inbox (Messages)</span>
+              <span className="text-xs bg-purple-500/20 px-2 py-1 rounded-full">{messages.length} New</span>
+            </h2>
+            <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+              {messagesLoading ? (
+                <p className="text-sm opacity-50">Loading messages...</p>
+              ) : messages.length === 0 ? (
+                <p className="text-sm opacity-50">No messages yet.</p>
+              ) : (
+                messages.map((msg) => (
+                  <div key={msg.id} className="glass p-4 rounded-xl border border-white/5 space-y-2 hover:border-purple-500/30 transition-all">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-bold text-white">{msg.name}</p>
+                        <p className="text-xs text-purple-400">{msg.email}</p>
+                      </div>
+                      <span className="text-[10px] opacity-40">
+                        {new Date(msg.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase opacity-50">Subject</p>
+                      <p className="text-sm">{msg.subject}</p>
+                    </div>
+                    <div className="pt-2">
+                       <p className="text-xs font-semibold uppercase opacity-50">Message</p>
+                       <p className="text-sm text-gray-300 italic">"{msg.message}"</p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </section>
 
