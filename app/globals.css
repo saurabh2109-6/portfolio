@@ -43,11 +43,11 @@ html {
 
 /* Interactive Futuristic Elements */
 .glass-neon {
-  @apply glass hover:border-cyan-400/50 transition-all duration-500;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.05);
+  @apply bg-[#0b061e]/70 backdrop-blur-xl border border-white/[0.05] hover:border-cyan-400/50 transition-all duration-500;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.05), 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 }
 .glass-neon:hover {
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.1), 0 8px 32px 0 rgba(0, 0, 0, 0.5);
   transform: translateY(-4px) scale(1.02);
 }
 
