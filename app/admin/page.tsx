@@ -21,6 +21,7 @@ export default function AdminPage() {
   const [newPassword, setNewPassword] = useState("");
   const [securityMessage, setSecurityMessage] = useState("");
   const [securityLoading, setSecurityLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const supabase = createBrowserSupabaseClient();
   const router = useRouter();
@@ -89,6 +90,25 @@ export default function AdminPage() {
       setNewPassword("");
     }
     setSecurityLoading(false);
+  };
+
+  const handleDeleteMessage = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/contact?id=${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setMessages(messages.filter(m => m.id !== id));
+      } else {
+        const err = await res.json();
+        alert(`Delete failed: ${err.error}`);
+      }
+    } catch (e) {
+      alert("Delete failed: Connection error.");
+    }
+    setDeletingId(null);
   };
 
   const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -632,9 +652,19 @@ export default function AdminPage() {
                       <p className="text-xs font-semibold uppercase opacity-50">Subject</p>
                       <p className="text-sm">{msg.subject}</p>
                     </div>
-                    <div className="pt-2">
-                       <p className="text-xs font-semibold uppercase opacity-50">Message</p>
-                       <p className="text-sm text-gray-300 italic">"{msg.message}"</p>
+                    <div className="pt-2 flex justify-between items-end">
+                       <div>
+                         <p className="text-xs font-semibold uppercase opacity-50">Message</p>
+                         <p className="text-sm text-gray-300 italic">"{msg.message}"</p>
+                       </div>
+                       <button
+                         type="button"
+                         onClick={() => handleDeleteMessage(msg.id)}
+                         disabled={deletingId === msg.id}
+                         className="text-[10px] text-red-400 hover:text-red-300 px-2 py-1 bg-red-500/10 rounded transition-all"
+                       >
+                         {deletingId === msg.id ? "..." : "Delete"}
+                       </button>
                     </div>
                   </div>
                 ))
