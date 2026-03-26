@@ -45,3 +45,29 @@ export async function GET() {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
+    }
+
+    const { error } = await supabase
+      .from('contacts')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ message: 'Deleted successfully' });
+  } catch (error: any) {
+    console.error('Contact API DELETE Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to delete message' },
+      { status: 500 }
+    );
+  }
+}
