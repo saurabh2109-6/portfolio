@@ -8,6 +8,10 @@ import { getPortfolioData } from "@/lib/portfolio";
 export default async function Home() {
   const data = await getPortfolioData();
 
+  if (!data || !data.personal || !data.about || !data.skills || !data.projects || !data.contact) {
+    return <div className="min-h-screen flex items-center justify-center">Loading portfolio data...</div>;
+  }
+
   return (
     <>
       <Hero data={data.personal} />
