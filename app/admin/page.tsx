@@ -112,6 +112,12 @@ export default function AdminPage() {
     setDeletingId(null);
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
+
   const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!data) return;
     setData({
@@ -155,7 +161,13 @@ export default function AdminPage() {
             >
               {syncing ? "Syncing..." : "Sync Local → Cloud"}
             </button>
-            <Link href="/" className="text-sm text-purple-400 hover:underline">Back to Site</Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-sm px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors font-medium border border-red-500/20 ml-2"
+            >
+              Logout
+            </button>
           </div>
         </div>
         
