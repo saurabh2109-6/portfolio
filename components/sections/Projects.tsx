@@ -121,6 +121,7 @@ const Projects = ({ data }: { data: PortfolioData['projects'] }) => {
                   className="z-10 opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700 filter drop-shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(0,240,255,0.6)]"
                 >
                   {project.image}
+                  
                 </motion.div>
               </div>
 

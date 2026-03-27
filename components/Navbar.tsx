@@ -78,12 +78,12 @@ const Navbar = () => {
           {/* Admin/Logout Button */}
           {mounted && (
             user ? (
-              <button
-                onClick={handleLogout}
-                className="ml-4 px-5 py-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] rounded-full text-[10px] sm:text-xs font-bold transition-all border border-red-500/20 flex items-center gap-2 uppercase tracking-wider"
+              <Link
+                href="/admin"
+                className="ml-4 px-5 py-2 bg-purple-600/20 text-purple-400 hover:bg-purple-600/30 hover:text-purple-300 hover:shadow-[0_0_15px_rgba(139,92,246,0.4)] rounded-full text-[10px] sm:text-xs font-bold transition-all border border-purple-500/30 flex items-center gap-2 uppercase tracking-wider"
               >
-                <LogOut className="w-3 h-3" /> Logout
-              </button>
+                <ShieldAlert className="w-3 h-3" /> Admin
+              </Link>
             ) : (
               <Link
                 href="/login"
@@ -129,9 +129,9 @@ const Navbar = () => {
             {mounted && (
               <div className="pt-4 border-t border-purple-500/20 flex justify-center">
                 {user ? (
-                  <button onClick={handleLogout} className="px-8 py-3 bg-red-500/10 text-red-400 rounded-full text-xs font-bold border border-red-500/20 uppercase tracking-widest flex items-center gap-2">
-                    <LogOut className="w-4 h-4" /> Logout
-                  </button>
+                  <Link href="/admin" onClick={() => setIsOpen(false)} className="px-8 py-3 bg-purple-600/20 text-purple-400 rounded-full text-xs font-bold border border-purple-500/30 uppercase tracking-widest flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4" /> Admin Panel
+                  </Link>
                 ) : (
                   <Link href="/login" onClick={() => setIsOpen(false)} className="px-8 py-3 bg-purple-600/20 text-purple-400 rounded-full text-xs font-bold border border-purple-500/30 uppercase tracking-widest flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4" /> Admin Panel
