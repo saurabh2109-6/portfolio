@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <>
       <Hero data={data.personal} />
-      <About data={data.about} />
+      <About data={data.about} avatar={data.personal.avatar} />
       <Skills data={data.skills} />
       <Projects data={data.projects} />
       <Contact data={data.contact} />

@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { Download, Terminal, Cpu } from "lucide-react";
 import { PortfolioData } from "@/lib/portfolio";
 
-const About = ({ data }: { data: PortfolioData['about'] }) => {
+const About = ({ data, avatar }: { data: PortfolioData['about']; avatar?: string }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -56,9 +56,15 @@ const About = ({ data }: { data: PortfolioData['about'] }) => {
                 <motion.div 
                   animate={{ y: ['-100%', '100%'] }}
                   transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                  className="absolute inset-0 w-full h-8 bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent" 
+                  className="absolute inset-0 w-full h-8 bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent z-20 pointer-events-none" 
                 />
-                <p className="text-[100px] filter drop-shadow-[0_0_15px_rgba(0,240,255,0.5)]">👨‍💻</p>
+                {avatar?.startsWith('data:image') || avatar?.startsWith('http') ? (
+                  <img src={avatar} alt="Profile" className="w-full h-full object-cover filter brightness-110 contrast-125 saturate-100 mix-blend-screen mix-blend-lighten" style={{ mixBlendMode: 'normal' }} />
+                ) : (
+                  <p className="text-[100px] flex items-center justify-center filter drop-shadow-[0_0_15px_rgba(0,240,255,0.5)] z-10 w-full h-full">
+                    {avatar || "👨‍💻"}
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>

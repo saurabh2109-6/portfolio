@@ -151,6 +151,55 @@ export default function AdminPage() {
     });
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Optional: show a loading state for image processing here if you want
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        const max_size = 800; // compress limits
+        if (width > height) {
+          if (width > max_size) {
+            height *= max_size / width;
+            width = max_size;
+          }
+        } else {
+          if (height > max_size) {
+            width *= max_size / height;
+            height = max_size;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Convert to base64 jpeg
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        if (data) {
+          setData({
+            ...data,
+            personal: {
+              ...data.personal,
+              avatar: dataUrl,
+            },
+          });
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   if (loading) return <div className="p-10 text-center">Loading...</div>;
 
   return (
@@ -228,6 +277,30 @@ export default function AdminPage() {
                 rows={3}
                 className="w-full px-4 py-2 glass rounded-lg border border-white/10 focus:border-purple-500 outline-none resize-none"
               />
+            </div>
+            
+            <div className="pt-4 border-t border-white/10 mt-4">
+              <label className="block text-sm font-medium mb-2">Profile Image (Avatar)</label>
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div className="w-24 h-24 rounded-xl border border-white/10 glass flex items-center justify-center overflow-hidden shrink-0 bg-black/40">
+                  {data?.personal.avatar?.startsWith("data:image") || data?.personal.avatar?.startsWith("http") ? (
+                    <img src={data.personal.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-4xl">{data?.personal.avatar || "👨‍💻"}</span>
+                  )}
+                </div>
+                <div className="space-y-2 flex-1">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-500/20 file:text-purple-400 hover:file:bg-purple-500/30 transition-all cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-500">
+                    Upload an image (will be automatically compressed and saved to the database). The current raw string value: {String(data?.personal.avatar).substring(0, 20)}...
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
 
