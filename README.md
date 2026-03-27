@@ -175,7 +175,7 @@ portfolio/
 Create \`.env.local\` for sensitive data:
 
 \`\`\`
-NEXT_PUBLIC_SITE_URL=https://yoursite.com
+NEXT_PUBLIC_SITE_URL=[https://yoursite.com](https://saurabh-p.vercel.app/)
 # Add email service keys, analytics, etc.
 \`\`\`
 
